@@ -49,6 +49,7 @@ export default class TextField extends PureComponent {
     disabled: false,
     disabledLineType: 'dotted',
     disabledLineWidth: 1,
+    autoUpdateValue: true
   };
 
   static propTypes = {
@@ -93,6 +94,8 @@ export default class TextField extends PureComponent {
 
     containerStyle: (ViewPropTypes || View.propTypes).style,
     inputContainerStyle: (ViewPropTypes || View.propTypes).style,
+
+    autoUpdateValue: PropTypes.bool,
   };
 
   constructor(props) {
@@ -352,6 +355,7 @@ export default class TextField extends PureComponent {
       containerStyle,
       inputContainerStyle: inputContainerStyleOverrides,
       clearTextOnFocus,
+      autoUpdateValue,
       ...props
     } = this.props;
 
@@ -516,7 +520,7 @@ export default class TextField extends PureComponent {
           <View style={styles.row}>
             {this.renderAffix('prefix', active, focused)}
 
-            <TextInput
+            {autoUpdateValue ? <TextInput
               style={[styles.input, inputStyle, inputStyleOverrides]}
               selectionColor={tintColor}
 
@@ -529,8 +533,23 @@ export default class TextField extends PureComponent {
               onFocus={this.onFocus}
               onBlur={this.onBlur}
               value={value}
+              
               ref={this.updateRef}
-            />
+            /> : <TextInput
+              style={[styles.input, inputStyle, inputStyleOverrides]}
+              selectionColor={tintColor}
+
+              {...props}
+
+              editable={!disabled && editable}
+              onChange={this.onChange}
+              onChangeText={this.onChangeText}
+              onContentSizeChange={this.onContentSizeChange}
+              onFocus={this.onFocus}
+              onBlur={this.onBlur}
+              
+              ref={this.updateRef}
+            />}
 
             {this.renderAffix('suffix', active, focused)}
             {this.renderAccessory()}
